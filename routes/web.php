@@ -33,3 +33,4 @@ Route::patch('/cashloan/{client}',          [App\Http\Controllers\AdviserControl
 Route::patch('/homeloan/{client}',          [App\Http\Controllers\AdviserController::class, 'homeLoan'])->name('adviser.homeloan');
 
 Route::get('/reports',                      [App\Http\Controllers\AdviserController::class, 'reports'])->name('adviser.reports');
+Route::get('/reports/export',               [App\Http\Controllers\AdviserController::class, 'export'])->name('adviser.export');

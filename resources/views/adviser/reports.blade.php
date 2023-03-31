@@ -7,8 +7,14 @@
 
     <div class="col-md-9">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex align-items-center justify-content-between">
                 Reports
+
+                <a href="{{ route('adviser.export') }}">
+                    <button class="btn btn-primary btn-sm ms-auto">
+                        Export
+                    </button>
+                </a>
             </div>
 
             <div class="card-body">

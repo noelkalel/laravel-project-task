@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AdvisersExport;
 use App\Http\Requests\AdviserRequest;
 use App\Models\CashLoan;
 use App\Models\Client;
 use App\Models\HomeLoan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Excel;
 
 class AdviserController extends Controller
 {
@@ -139,10 +141,17 @@ class AdviserController extends Controller
         
         // merge the cash loan products and home loan products into a single collection
         $products = $cashLoanProducts->merge($homeLoanProducts);
+
+        // dd($products);
         
         // sort the products by creation date, from newest to oldest
         $reports = $products->sortByDesc('created_at');
 
         return view('adviser.reports', compact('reports'));
+    }
+
+    public function export(Excel $excel)
+    {
+        return $excel->download(new AdvisersExport, env('APP_NAME') . ' - products.xlsx');
     }
 }
