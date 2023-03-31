@@ -122,16 +122,26 @@ class AdviserController extends Controller
 
     public function reports()
     {
-        $cashLoan = CashLoan::selectRaw('null as down_payment_amount')
-            ->addSelect('loan_amount', 'adviser_id', 'created_at')
-            ->selectRaw("'cash loan' as type")
-            ->where('adviser_id', auth()->id());
+        // $cashLoan = CashLoan::selectRaw('null as down_payment_amount')
+        //     ->addSelect('loan_amount', 'adviser_id', 'created_at')
+        //     ->selectRaw("'cash loan' as type")
+        //     ->where('adviser_id', auth()->id());
 
-        $homeLoan = HomeLoan::select('property_value', 'down_payment_amount', 'adviser_id', 'created_at')
-            ->selectRaw("'home loan' as type")
-            ->where('adviser_id', auth()->id());
+        // $homeLoan = HomeLoan::select('property_value', 'down_payment_amount', 'adviser_id', 'created_at')
+        //     ->selectRaw("'home loan' as type")
+        //     ->where('adviser_id', auth()->id());
 
-        $reports = $cashLoan->union($homeLoan)->latest()->get();
+        // $reports = $cashLoan->union($homeLoan)->latest()->get();
+        
+        // get all cash loan products and home loan products that belong to the adviser
+        $cashLoanProducts = auth()->user()->cashLoans;
+        $homeLoanProducts = auth()->user()->homeLoans;
+        
+        // merge the cash loan products and home loan products into a single collection
+        $products = $cashLoanProducts->merge($homeLoanProducts);
+        
+        // sort the products by creation date, from newest to oldest
+        $reports = $products->sortByDesc('created_at');
 
         return view('adviser.reports', compact('reports'));
     }

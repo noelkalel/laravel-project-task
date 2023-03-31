@@ -26,6 +26,26 @@
                                 @foreach ($reports as $report)
                                     <tr>
                                         <td class="align-middle">
+                                            @if($report->loan_amount)
+                                                Cash loan
+                                            @else
+                                                Home loan
+                                            @endif
+                                        </td>
+                                        <td class="align-middle">
+                                            @if($report->loan_amount)
+                                                {{ $report->loan_amount }}
+                                            @else
+                                                {{ $report->property_value }} - {{ $report->down_payment_amount }}
+                                            @endif
+                                        </td>
+                                        <td class="align-middle">
+                                            {{ $report->created_at }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- <tr>
+                                        <td class="align-middle">
                                             {{ $report->type }}
                                         </td>
                                         @if($report->type == 'cash loan')
@@ -40,7 +60,7 @@
                                         <td class="align-middle">
                                             {{ $report->created_at }}
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                 @endforeach
                             @else
                                 <tr class="text-center">
