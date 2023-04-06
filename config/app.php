@@ -58,6 +58,8 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    'export' => env('APP_EXPORT'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

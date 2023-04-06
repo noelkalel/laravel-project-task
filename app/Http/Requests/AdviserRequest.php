@@ -14,10 +14,10 @@ class AdviserRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required',
-            'last_name'  => 'required',
+            'first_name' => ['required', 'string', 'max:255', 'alpha'],
+            'last_name'  => ['required', 'string', 'max:255', 'alpha'],
             'email'      => 'required_without:phone|nullable|email',
-            'phone'      => 'required_without:email|nullable',
+            'phone'      => 'required_without:email|nullable|numeric',
         ];
     }
 }

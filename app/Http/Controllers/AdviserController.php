@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AdvisersExport;
-use App\Http\Requests\AdviserRequest;
-use App\Models\CashLoan;
+
 use App\Models\Client;
 use App\Models\HomeLoan;
+use App\Models\CashLoan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel;
+use App\Services\AdviserReport;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AdviserRequest;
+use App\Http\Requests\CashLoanRequest;
+use App\Http\Requests\HomeLoanRequest;
 
 class AdviserController extends Controller
 {
@@ -25,7 +29,7 @@ class AdviserController extends Controller
 
     public function index()
     {
-        $clients = Client::latest()->get();
+        $clients = Client::with(['cashLoan', 'homeLoan'])->latest()->get();
 
         return view('adviser.index', compact('clients'));
     }
@@ -81,11 +85,11 @@ class AdviserController extends Controller
         return redirect()->route('adviser.index')->with('success', 'Client Deleted');
     }
 
-    public function cashLoan(Client $client)
+    public function cashLoan(CashLoanRequest $request, Client $client)
     {
         // if($client->adviser_id != auth()->id()){
         //     abort(401, 'Unautorized!');
-        // }
+        // }        
 
         $this->authorize('change', $client);
 
@@ -101,7 +105,7 @@ class AdviserController extends Controller
         return back()->with('success', 'Cash loan Added');        
     }
 
-    public function homeLoan(Client $client)
+    public function homeLoan(HomeLoanRequest $request, Client $client)
     {
         // if($client->adviser_id != auth()->id()){
         //     abort(401, 'Unautorized!');
@@ -122,30 +126,9 @@ class AdviserController extends Controller
         return back()->with('success', 'Home loan Added');               
     }
 
-    public function reports()
+    public function reports(AdviserReport $report)
     {
-        // $cashLoan = CashLoan::selectRaw('null as down_payment_amount')
-        //     ->addSelect('loan_amount', 'adviser_id', 'created_at')
-        //     ->selectRaw("'cash loan' as type")
-        //     ->where('adviser_id', auth()->id());
-
-        // $homeLoan = HomeLoan::select('property_value', 'down_payment_amount', 'adviser_id', 'created_at')
-        //     ->selectRaw("'home loan' as type")
-        //     ->where('adviser_id', auth()->id());
-
-        // $reports = $cashLoan->union($homeLoan)->latest()->get();
-        
-        // get all cash loan products and home loan products that belong to the adviser
-        $cashLoanProducts = auth()->user()->cashLoans;
-        $homeLoanProducts = auth()->user()->homeLoans;
-        
-        // merge the cash loan products and home loan products into a single collection
-        $products = $cashLoanProducts->merge($homeLoanProducts);
-
-        // dd($products);
-        
-        // sort the products by creation date, from newest to oldest
-        $reports = $products->sortByDesc('created_at');
+        $reports = $report->handle();
 
         return view('adviser.reports', compact('reports'));
     }

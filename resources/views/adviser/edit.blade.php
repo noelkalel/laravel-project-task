@@ -107,7 +107,7 @@
                             <div class="form-group mb-2">
                                 <label for="loan_amount">Loan Amount</label>
                                 <input 
-                                    type="number" 
+                                    type="number"
                                     name="loan_amount" 
                                     class="form-control @error('loan_amount') is-invalid @enderror" 
                                     value="{{ $client->cashLoan->loan_amount ?? 0 }}"
@@ -141,7 +141,7 @@
                                 <div class="form-group col-md-6 mb-2">
                                     <label for="property_value">Property Value:</label>
                                     <input 
-                                        type="number" 
+                                        type="number"
                                         name="property_value" 
                                         class="form-control @error('property_value') is-invalid @enderror" 
                                         value="{{ $client->homeLoan->property_value ?? 0 }}"

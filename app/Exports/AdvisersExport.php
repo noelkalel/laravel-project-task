@@ -4,14 +4,15 @@ namespace App\Exports;
 
 use Carbon\Carbon;
 use App\Models\Adviser;
-use Maatwebsite\Excel\Events\AfterSheet;
+use App\Services\AdviserReport;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
 
 class AdvisersExport implements FromCollection, WithMapping, WithHeadings, WithEvents, ShouldAutoSize, WithTitle
 {
@@ -21,12 +22,7 @@ class AdvisersExport implements FromCollection, WithMapping, WithHeadings, WithE
 
     public function collection()
     {
-        $cashLoanProducts = auth()->user()->cashLoans;
-        $homeLoanProducts = auth()->user()->homeLoans;
-
-        $products = $cashLoanProducts->merge($homeLoanProducts);
-
-        return $products->sortByDesc('created_at');
+        return (new AdviserReport())->handle();
     }
 
     public function map($user): array
@@ -64,6 +60,6 @@ class AdvisersExport implements FromCollection, WithMapping, WithHeadings, WithE
 
     public function title(): string
     {
-        return env('APP_NAME') . ' - Products';
+        return config('app.export') . ' - Products';
     }
 }
