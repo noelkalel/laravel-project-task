@@ -93,7 +93,7 @@ class AdviserController extends Controller
 
         $this->authorize('change', $client);
 
-        $cashLoan = CashLoan::where('client_id', $client->id)->firstOrFail();
+        $cashLoan = CashLoan::where('client_id', $client->id)->first();
 
         CashLoan::updateOrCreate([
             'client_id'  => $client->id,
@@ -113,7 +113,7 @@ class AdviserController extends Controller
 
         $this->authorize('change', $client);
 
-        $homeLoan = HomeLoan::where('client_id', $client->id)->firstOrFail();      
+        $homeLoan = HomeLoan::where('client_id', $client->id)->first();      
 
         HomeLoan::updateOrCreate([
             'client_id'  => $client->id,
@@ -135,6 +135,6 @@ class AdviserController extends Controller
 
     public function export(Excel $excel)
     {
-        return $excel->download(new AdvisersExport, env('APP_NAME') . ' - products.xlsx');
+        return $excel->download(new AdvisersExport, config('app.export') . ' - products.xlsx');
     }
 }
